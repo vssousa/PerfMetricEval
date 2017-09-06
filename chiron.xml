@@ -1,0 +1,54 @@
+<SciCumulus>
+	<environment type="LOCAL" verbose="false"/>
+	<constraint workflow_exectag="workflow-map-1" cores="3" performance="false"/>
+	<workspace workflow_dir="/Users/vitor/Desktop/workflow"/>
+	<database name="chiron-sar-tau" username="chiron" password="chiron" port="5432" server="localhost"/>
+	<conceptualWorkflow tag="workflow-map" description="">
+		<activity tag="act1" description="" type="MAP" activation="./experiment.cmd" template="%=WFDIR%/template_act1">
+			<relation reltype="Input" name="IAct1"/>
+			<relation reltype="Output" name="OAct1" />
+			<extractor name="rdi1" type="INDEXING" cartridge="CSV" search="file-*" delimiter=","/>
+			<extractor name="dl1" type="LOADING" cartridge="EXTERNAL_PROGRAM" invocation="./extractor.cmd"/>
+			<field name="IDENT" type="float" input="IAct1" output="OAct1" decimalplaces="0"/>
+			<field name="FILE1" type="file" input="IAct1" output="OAct1"/>
+			<field name="FILE2" type="file" input="IAct1" output="OAct1"/>
+			<field name="K" type="float" output="OAct1" decimalplaces="0" extractor="rdi1"/>
+			<field name="TA" type="float" output="OAct1" decimalplaces="0" extractor="rdi1"/>
+			<field name="TB" type="float" output="OAct1" decimalplaces="0" extractor="rdi1"/>
+			<field name="TC" type="float" output="OAct1" decimalplaces="0" extractor="rdi1"/>
+			<field name="TD" type="float" output="OAct1" decimalplaces="0" extractor="dl1"/>
+			<field name="TE" type="float" output="OAct1" decimalplaces="0" extractor="dl1"/>
+			<field name="TF" type="float" output="OAct1" decimalplaces="0" extractor="dl1"/>
+			<join inner="rdi1" outer="dl1" fields="K"/>
+    	</activity>
+		<activity tag="act2" description="" type="MAP" activation="./experiment.cmd" template="%=WFDIR%/template_act2">
+			<relation reltype="Input" dependency="act1"/>
+			<relation reltype="Output" name="OAct2" />
+			<field name="IDENT" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="FILE1" type="file"/>
+			<field name="FILE2" type="file"/>
+			<field name="K" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TA" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TB" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TC" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TD" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TE" type="float" output="OAct2" decimalplaces="0"/>
+			<field name="TF" type="float" output="OAct2" decimalplaces="0"/>
+    	</activity>
+		<activity tag="act3" description="" type="MAP" activation="./experiment.cmd" template="%=WFDIR%/template_act3">
+			<relation reltype="Input" dependency="act2"/>
+			<relation reltype="Output" name="OAct3" />
+			<field name="IDENT" type="float" output="OAct3" decimalplaces="0"/>
+			<field name="K" type="float" output="OAct3" decimalplaces="0"/>
+			<field name="TA" type="float" output="OAct3" decimalplaces="0"/>
+			<field name="TB" type="float" output="OAct3" decimalplaces="0"/>
+			<field name="TC" type="float" decimalplaces="0"/>
+			<field name="TD" type="float" decimalplaces="0"/>
+			<field name="TE" type="float" decimalplaces="0"/>
+			<field name="TF" type="float" decimalplaces="0"/>
+    	</activity>
+	</conceptualWorkflow>
+	<executionWorkflow tag="workflow-map" execmodel="DYN_FAF" expdir="%=WFDIR%/exp">
+		<relation name="IAct1" filename="input.dataset"/>
+	</executionWorkflow>
+</SciCumulus>
